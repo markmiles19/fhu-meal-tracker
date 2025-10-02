@@ -1,13 +1,58 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
+  const [remainingLionBucks, setRemainingLionBucks] = useState<number | null>(null);
+  const [totalLionBucks, setTotalLionBucks] = useState<number | null>(null);
+
+  const [remainingMeals, setRemainingMeals] = useState<number | null>(null);
+  const [totalMeals, setTotalMeals] = useState<number | null>(null);
+  const [remainingLionsPride, setRemainingLionsPride] = useState<number | null>(null);
+  const [totalLionsPride, setTotalLionsPride] = useState<number | null>(null);
+  const [remainingCFA, setRemainingCFA] = useState<number | null>(null);
+  const [totalCFA, setTotalCFA] = useState<number | null>(null);
+
+  const calculateRemainingLionBucks = (totalLionBucks: number | null) => {
+    // Subtract expenses from history.
+  }
+
+  const calculateRemainingMeals = (totalMeals: number | null) => {
+    // Subtract expenses from history.
+  }
+
+  const calculateRemainingLionsPride = (totalLionsPride: number | null) => {
+    // Subtract expenses from history.
+  }
+
+  const calculateRemainingCFA = (totalCFA: number | null) => {
+    // Subtract expenses from history.
+  }
+
+  useEffect(() => {
+    // Each students gets $180 in Lion Bucks at the beginning of the semester.
+    setTotalLionBucks(180.00)
+
+    // Each student gets 14 meal swipes at Jones Dining Hall every week.
+    setTotalMeals(14)
+
+    // Each student gets 5 meal swipes at Lion's Pride every week.
+    setTotalLionsPride(5)
+
+    // Each student gets 2 meal swipes at Chick-Fil-A every week.
+    setTotalCFA(2)
+
+    const remainingLionBucks = calculateRemainingLionBucks(totalLionBucks)
+    const remainingMeals = calculateRemainingMeals(totalMeals)
+    const remainingLionsPride = calculateRemainingLionsPride(totalLionsPride)
+    const remainingCFA = calculateRemainingCFA(totalCFA)
+  })
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -18,8 +63,7 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">Home</ThemedText>
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
