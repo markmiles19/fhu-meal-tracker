@@ -1,7 +1,7 @@
 import Separator from '@/components/Separator';
 import { Text } from '@/components/Themed';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useEffect, useState } from 'react';
+import { useTransactions } from '@/contexts/TransactionContext';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,21 +9,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function HomeScreen() {
   const { theme, toggleTheme } = useTheme();
 
-  const [remainingLionBucks, setRemainingLionBucks] = useState<number | null>(null);
-  const [totalLionBucks, setTotalLionBucks] = useState<number | null>(null);
-  const [remainingMeals, setRemainingMeals] = useState<number | null>(null);
-  const [totalMeals, setTotalMeals] = useState<number | null>(null);
-  const [remainingLionsPride, setRemainingLionsPride] = useState<number | null>(null);
-  const [totalLionsPride, setTotalLionsPride] = useState<number | null>(null);
-  const [remainingCFA, setRemainingCFA] = useState<number | null>(null);
-  const [totalCFA, setTotalCFA] = useState<number | null>(null);
+  const { totalSpent } = useTransactions();
+  const totalLionBucks = 180.00;
+  const remainingLionBucks = totalLionBucks - totalSpent;
+  const percentageLionBucks = (remainingLionBucks / totalLionBucks) * 100;
 
-  useEffect(() => {
-    setTotalLionBucks(180.0);
-    setTotalMeals(14);
-    setTotalLionsPride(5);
-    setTotalCFA(2);
-  }, []);
+  const totalDD = 14;
+  const remainingDD = totalDD - totalSpent;
+  const percentageDD = (remainingDD / totalDD) * 100;
+
+  const totalMeals = 14;
+  const remainingMeals = totalMeals - totalSpent;
+  const percentageMeals = (remainingMeals / totalMeals) * 100;
+
+  const totalLionsPride = 5;
+  const remainingLionsPride = totalLionsPride - totalSpent;
+  const percentageLionsPride = (remainingLionsPride / totalLionsPride) * 100;
+
+  const totalCFA = 2;
+  const remainingCFA = totalCFA - totalSpent;
+  const percentageCFA = (remainingCFA / totalCFA) * 100;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -37,12 +42,13 @@ export default function HomeScreen() {
 
         <Button title="Toggle Theme" onPress={toggleTheme} />
 
+        {/* LION BUCKS */}
         <Text style={styles.title}>Lion Bucks</Text>
         <CircularProgress
-          value={12}
+          value={percentageLionBucks}
           radius={56}
           maxValue={14}
-          duration={1200}
+          duration={100}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
           activeStrokeColor="#6C5CE7"
@@ -50,14 +56,18 @@ export default function HomeScreen() {
           progressValueStyle={{ fontWeight: '600' }}
           valueSuffix="%"
         />
+        <Text style={styles.subtitle}>
+          Total Remaining: $
+        </Text>
         <Separator />
 
+        {/* DINING DOLLARS */}
         <Text style={styles.title}>Dining Dollars</Text>
         <CircularProgress
-          value={12}
+          value={percentageDD}
           radius={56}
           maxValue={14}
-          duration={1200}
+          duration={100}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
           activeStrokeColor="#6C5CE7"
@@ -65,14 +75,18 @@ export default function HomeScreen() {
           progressValueStyle={{ fontWeight: '600' }}
           valueSuffix="%"
         />
+        <Text style={styles.subtitle}>
+          Total Remaining: $
+        </Text>
         <Separator />
 
+        {/* JONES MEALS */}
         <Text style={styles.title}>Jones Dining Hall Meals</Text>
         <CircularProgress
-          value={12}
+          value={percentageMeals}
           radius={56}
           maxValue={14}
-          duration={1200}
+          duration={100}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
           activeStrokeColor="#6C5CE7"
@@ -80,14 +94,18 @@ export default function HomeScreen() {
           progressValueStyle={{ fontWeight: '600' }}
           valueSuffix="%"
         />
+        <Text style={styles.subtitle}>
+          Total Remaining: $
+        </Text>
         <Separator />
 
+        {/* LION'S PRIDE */}
         <Text style={styles.title}>Lion's Pride Meals</Text>
         <CircularProgress
-          value={12}
+          value={percentageLionsPride}
           radius={56}
           maxValue={14}
-          duration={1200}
+          duration={100}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
           activeStrokeColor="#6C5CE7"
@@ -95,14 +113,18 @@ export default function HomeScreen() {
           progressValueStyle={{ fontWeight: '600' }}
           valueSuffix="%"
         />
+        <Text style={styles.subtitle}>
+          Total Remaining: $
+        </Text>
         <Separator />
 
+        {/* CHICK-FIL-A */}
         <Text style={styles.title}>Chick-Fil-A Meals</Text>
         <CircularProgress
-          value={12}
+          value={percentageCFA}
           radius={56}
           maxValue={14}
-          duration={1200}
+          duration={100}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
           activeStrokeColor="#6C5CE7"
@@ -110,6 +132,9 @@ export default function HomeScreen() {
           progressValueStyle={{ fontWeight: '600' }}
           valueSuffix="%"
         />
+        <Text style={styles.subtitle}>
+          Total Remaining: $
+        </Text>
         <Separator />
       </ScrollView>
     </SafeAreaView>
@@ -125,6 +150,10 @@ const styles = StyleSheet.create({
   modeText: {
     fontSize: 18,
     marginBottom: 20,
+  },
+  subtitle: {
+    marginTop: 20,
+    fontSize: 16,
   },
   title: {
     fontSize: 24,
