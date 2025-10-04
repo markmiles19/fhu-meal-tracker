@@ -1,8 +1,6 @@
-import { RefreshControl, StyleSheet, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
-import { FlatList } from 'react-native-reanimated/lib/typescript/Animated';
-
-import { Text } from 'react-native';
+import { Text } from '@/components/Themed';
 import { useState } from 'react';
 
 const clubs = [
@@ -34,19 +32,24 @@ export default function FlatListScreen() {
                 description:string
             }
         }) => {
-        <View>
-            <Text>{item.title}</Text>
-        </View>}
+        <View style={styles.item}>
+          <Text style={styles.itemTitle}>{item.title}</Text>
+          <Text style={styles.itemDescription}>{item.description}</Text>
+        </View>
 
   return (
     <FlatList
         data={clubs}
         keyExtractor={ (item)=> item.id }
         renderItem={renderItem}
-        ListHeaderComponent={: "center"}
-        ItemSeparatorComponent={ ()=> <View style={styles.separator}}
+        ListHeaderComponent={
+          <Text style={{ textAlign: "center", fontSize: 18 }}>Clubs</Text>
+        }
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListEmptyComponent={ <Text> No clubs were found </Text>}
-        refreshControl=<RefreshControl onRefresh={onRefresh} refreshing={refreshing}></RefreshControl>
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
+        }
         />);}
 
 const styles = StyleSheet.create({
@@ -76,4 +79,4 @@ const styles = StyleSheet.create({
   itemDescription: {
     color: "#ddd"
   }
-});
+})};

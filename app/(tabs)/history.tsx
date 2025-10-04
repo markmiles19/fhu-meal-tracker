@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
-import {
-  SectionList,
-  StyleSheet,
-} from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Text, View } from '@/components/Themed';
 
@@ -29,24 +27,36 @@ const SECTIONS = [
   }
 ];
 
-const prettyDate = (iso) => {
+const prettyDate = (iso: string): string => {
   const d = new Date(iso + 'T12:00:00');
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'})
 };
 
-const sectionTotal = (section) =>
-  section.data.reduce((sum, t) => sum + (t.amount || 0), 0);
+type Transaction = {
+  id: string;
+  amount: number;
+  description: string;
+  tag: string;
+};
 
-const Tag = ({ value }) => {
-  const style = TAG_STYLES[value] || {bg: '#E5E7EB', text: '#111827'};
+type Section = {
+  date: string;
+  data: Transaction[];
+};
+
+const sectionTotal = (section: Section) =>
+  section.data.reduce((sum: number, t: Transaction) => sum + (t.amount || 0), 0);
+
+const Tag = ({ value }: { value: string }) => {
+  const style = TAG_STYLES[value as keyof typeof TAG_STYLES] || {bg: '#E5E7EB', text: '#111827'};
   return (
-    <View style={[styles.tag, { backgroundColor: "111" }]}>
+    <View style={[styles.tag, { backgroundColor: style.bg }]}>
       <Text style={[styles.tagText, { color: style.text }]}>{value}</Text>
     </View>
   );
 };
 
-const TransactionRow = ({ item }) => (
+const TransactionRow = ({ item }: { item: Transaction }) => (
   <View style={styles.row}>
     <View style={styles.rowText}>
       <Text style={styles.desc} numberOfLines={1}>{item.description}</Text>
@@ -68,7 +78,7 @@ export default function TransactionsSectionList() {
   );
 
   return (
-    <View style={styles.safe}>
+    <SafeAreaView style={styles.safe}>
       <SectionList
         sections={sectionWithTotals}
         keyExtractor={(item) => item.id}
@@ -95,14 +105,14 @@ export default function TransactionsSectionList() {
               {`Total (${sectionWithTotals.length} days): `}
               <Text style={styles.footerStrong}>
                 {CURRENCY.format(
-                  sectionsWithTotals.reduce((sum, s) => sum + s._total, 0)
+                  sectionWithTotals.reduce((sum, s) => sum + s._total, 0)
                 )}
               </Text>
             </Text>
           </View>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
