@@ -1,8 +1,7 @@
-import React, { useMemo } from 'react';
-import { SectionList, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
 import { Text, View } from '@/components/Themed';
+import React, { useMemo } from 'react';
+import { SectionList, StyleSheet, useColorScheme } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const CURRENCY = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -11,19 +10,52 @@ const CURRENCY = new Intl.NumberFormat('en-US', {
 });
 
 const TAG_STYLES = {
-  Starbucks: { bg: '#F3E8FF', text: '#6B21A8' },
-  LP:        { bg: '#E0F2FE', text: '#075985' },
-  CFA:       { bg: '#FEF3C7', text: '#92400E' },
-  Jones:     { bg: '#DCFCE7', text: '#166534' },
+  Starbucks: { bg: '#009933', text: '#ffffffff' },
+  LP:        { bg: '#faff6aff', text: '#000000ff' },
+  CFA:       { bg: '#f24141ff', text: '#ffffffff' },
+  Jones:     { bg: '#2790ffff', text: '#ffffffff' },
 };
 
 const SECTIONS = [
   {
     date: '2025-09-29',
     data: [
-      { id: '0929-1', amount: 6.45, description: 'Iced latte', tag: 'Starbucks'},
-      { id: '0929-2', amount: 12.00, description: 'Chicken Sandwich Combo', tag: 'CFA'}
+      { id: '0929-1', amount: 6.45, description: 'Iced latte', tag: 'Starbucks' },
+      { id: '0929-2', amount: 1, description: 'Lunch Meal Swipe', tag: 'Jones' },
+      { id: '0929-3', amount: 1, description: 'Dinner Meal Swipe', tag: 'LP' },
+    ],
+  },
+  {
+    date: "2025-10-01",
+    data: [
+      { id: '1001-1', amount: 1, description: "Breakfast Meal Swipe", tag: "Jones" },
+      { id: '1001-2', amount: 5.95, description: "Latte", tag: "Starbucks" },
+      { id: '1001-3', amount: 1, description: "Dinner Meal Swipe", tag: "Jones" },
+    ],
+  },
+  {
+    date: "2025-10-02",
+    data: [
+      { id: '1002-1', amount: 1, description: "Breakfast Meal Swipe", tag: "LP" },
+      { id: '1002-2', amount: 4.85, description: "Cookie", tag: "Starbucks" },
+      { id: '1002-3', amount: 1, description: "Dinner Meal Swipe", tag: "Jones" },
     ]
+  },
+  {
+    date: "2025-10-03",
+    data: [
+      { id: '1003-1', amount: 1, description: "Lunch Meal Swipe", tag: "Jones" },
+      { id: '1003-2', amount: 1, description: "Dinner Meal Swipe", tag: "Jones" },
+      { id: '1003-3', amount: 4.15, description: "Coffee", tag: "Starbucks" },
+    ],
+  },
+  {
+    date: "2025-10-04",
+    data: [
+      { id: '1004-1', amount: 5.65, description: "Flat White", tag: "Starbucks" },
+      { id: '1004-2', amount: 1, description: "Lunch Meal Swipe", tag: "LP" },
+      { id: '1004-3', amount: 1, description: "Chick-Fil-A Sandwich", tag: "CFA" },
+    ],
   }
 ];
 
@@ -67,6 +99,9 @@ const TransactionRow = ({ item }: { item: Transaction }) => (
 );
 
 export default function TransactionsSectionList() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   const sectionWithTotals = useMemo(
     () =>
       SECTIONS.map((s) => ({
@@ -77,31 +112,53 @@ export default function TransactionsSectionList() {
     []
   );
 
+  const backgroundColor = isDark ? '#000000' : '#ffffff';
+  const headerBg = isDark ? '#111827' : '#f9fafb';
+
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView
+      style={[
+        styles.safe,
+        { backgroundColor: isDark ? '#000000' : '#ffffff' },
+      ]}
+    >
       <SectionList
         sections={sectionWithTotals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <TransactionRow item={item} />}
         renderSectionHeader={({ section }) => (
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            <Text style={styles.sectionTotal}>{CURRENCY.format(section._total)}</Text>
+          <View
+            style={[
+              styles.sectionHeader,
+              { backgroundColor: isDark ? '#111827' : '#f9fafb' },
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { color: isDark ? '#f9fafb' : '#111827' }]}>
+              {section.title}
+            </Text>
+            <Text style={[styles.sectionTotal, { color: isDark ? '#f9fafb' : '#374151' }]}>
+              {CURRENCY.format(section._total)}
+            </Text>
           </View>
         )}
-        ItemSeparatorComponent={() => <View style={styles.itemSep} />}
-        SectionSeparatorComponent={() => <View style={styles.sectionSep} />}
-        stickySectionHeadersEnabled
+        ItemSeparatorComponent={() => (
+          <View style={[styles.itemSep, { backgroundColor: isDark ? '#27272a' : '#e5e7eb' }]} />
+        )}
+        SectionSeparatorComponent={() => (
+          <View style={[styles.sectionSep, { backgroundColor: isDark ? '#1f2937' : '#f3f4f6' }]} />
+        )}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.listHeader}>
-            <Text style={styles.h1}>Transactions</Text>
-            <Text style={styles.subtitle}>Last 10 days</Text>
+            <Text style={[styles.h1, { color: isDark ? '#f9fafb' : '#111827' }]}>Transactions</Text>
+            <Text style={[styles.subtitle, { color: isDark ? '#9ca3af' : '#6b7280' }]}>
+              Last 10 days
+            </Text>
           </View>
         }
         ListFooterComponent={
           <View style={styles.footer}>
-            <Text style={styles.footerText}>
+            <Text style={[styles.footerText, { color: isDark ? '#d1d5db' : '#111827' }]}>
               {`Total (${sectionWithTotals.length} days): `}
               <Text style={styles.footerStrong}>
                 {CURRENCY.format(
@@ -111,6 +168,8 @@ export default function TransactionsSectionList() {
             </Text>
           </View>
         }
+        style={{ backgroundColor }}
+        stickySectionHeadersEnabled
       />
     </SafeAreaView>
   );

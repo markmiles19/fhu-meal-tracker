@@ -2,33 +2,47 @@ import Separator from '@/components/Separator';
 import { Text } from '@/components/Themed';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTransactions } from '@/contexts/TransactionContext';
+import { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
+const BASE_URL = "https://api.fhumealtracker.fhu.edu/data.json"
+
+export default async function HomeScreen() {
+  const { totalsByTag } = useTransactions();
+
+  const getData = async () => {
+    const response = await fetch(BASE_URL)
+    const data = await response.json()
+
+    console.log(data)
+
+    setMealsRemaining(data.meals.remaining);
+  }
+
+  useEffect(()=> {
+    getData()
+  }, []);
+
+  const [mealsRemaining, setMealsRemaining] = useState(0)
+
   const { theme, toggleTheme } = useTheme();
 
-  const { totalSpent } = useTransactions();
   const totalLionBucks = 180.00;
-  const remainingLionBucks = totalLionBucks - totalSpent;
-  const percentageLionBucks = (remainingLionBucks / totalLionBucks) * 100;
+  // const remainingLionBucks = totalLionBucks - totalsByTag['LionBucks'];
 
-  const totalDD = 14;
-  const remainingDD = totalDD - totalSpent;
-  const percentageDD = (remainingDD / totalDD) * 100;
+  const totalDD = 150.00;
+  const remainingDD = totalDD - totalsByTag['Starbucks'];
 
   const totalMeals = 14;
-  const remainingMeals = totalMeals - totalSpent;
-  const percentageMeals = (remainingMeals / totalMeals) * 100;
+  const remainingMeals = totalMeals - totalsByTag['Jones'];
 
   const totalLionsPride = 5;
-  const remainingLionsPride = totalLionsPride - totalSpent;
-  const percentageLionsPride = (remainingLionsPride / totalLionsPride) * 100;
+  const remainingLionsPride = totalLionsPride - totalsByTag['LP'];
 
   const totalCFA = 2;
-  const remainingCFA = totalCFA - totalSpent;
-  const percentageCFA = (remainingCFA / totalCFA) * 100;
+  const remainingCFA = totalCFA - totalsByTag['CFA'];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -42,100 +56,81 @@ export default function HomeScreen() {
 
         <Button title="Toggle Theme" onPress={toggleTheme} />
 
-        {/* LION BUCKS */}
-        <Text style={styles.title}>Lion Bucks</Text>
-        <CircularProgress
-          value={percentageLionBucks}
-          radius={56}
-          maxValue={14}
-          duration={100}
-          activeStrokeWidth={12}
-          inActiveStrokeWidth={12}
-          activeStrokeColor="#6C5CE7"
-          inActiveStrokeColor="#E8EAF0"
-          progressValueStyle={{ fontWeight: '600' }}
-          valueSuffix="%"
-        />
-        <Text style={styles.subtitle}>
-          Total Remaining: $
-        </Text>
-        <Separator />
-
-        {/* DINING DOLLARS */}
-        <Text style={styles.title}>Dining Dollars</Text>
-        <CircularProgress
-          value={percentageDD}
-          radius={56}
-          maxValue={14}
-          duration={100}
-          activeStrokeWidth={12}
-          inActiveStrokeWidth={12}
-          activeStrokeColor="#6C5CE7"
-          inActiveStrokeColor="#E8EAF0"
-          progressValueStyle={{ fontWeight: '600' }}
-          valueSuffix="%"
-        />
-        <Text style={styles.subtitle}>
-          Total Remaining: $
-        </Text>
         <Separator />
 
         {/* JONES MEALS */}
         <Text style={styles.title}>Jones Dining Hall Meals</Text>
         <CircularProgress
-          value={percentageMeals}
+          value={remainingMeals}
           radius={56}
           maxValue={14}
-          duration={100}
+          duration={14}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
-          activeStrokeColor="#6C5CE7"
+          activeStrokeColor="#f44949ff"
           inActiveStrokeColor="#E8EAF0"
           progressValueStyle={{ fontWeight: '600' }}
-          valueSuffix="%"
         />
         <Text style={styles.subtitle}>
-          Total Remaining: $
+          Total: {totalMeals}
         </Text>
         <Separator />
 
         {/* LION'S PRIDE */}
         <Text style={styles.title}>Lion's Pride Meals</Text>
         <CircularProgress
-          value={percentageLionsPride}
+          value={remainingLionsPride}
           radius={56}
-          maxValue={14}
-          duration={100}
+          maxValue={5}
+          duration={5}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
-          activeStrokeColor="#6C5CE7"
+          activeStrokeColor="#f44949ff"
           inActiveStrokeColor="#E8EAF0"
           progressValueStyle={{ fontWeight: '600' }}
-          valueSuffix="%"
         />
         <Text style={styles.subtitle}>
-          Total Remaining: $
+          Total: {totalLionsPride}
+        </Text>
+        <Separator />
+
+        {/* DINING DOLLARS */}
+        <Text style={styles.title}>Dining Dollars</Text>
+        <CircularProgress
+          value={remainingDD}
+          radius={56}
+          maxValue={150}
+          duration={150}
+          activeStrokeWidth={12}
+          inActiveStrokeWidth={12}
+          activeStrokeColor="#f44949ff"
+          inActiveStrokeColor="#E8EAF0"
+          progressValueStyle={{ fontWeight: '600' }}
+          valuePrefix="$"
+        />
+        <Text style={styles.subtitle}>
+          Total: ${totalDD}
         </Text>
         <Separator />
 
         {/* CHICK-FIL-A */}
         <Text style={styles.title}>Chick-Fil-A Meals</Text>
         <CircularProgress
-          value={percentageCFA}
+          value={remainingCFA}
           radius={56}
-          maxValue={14}
-          duration={100}
+          maxValue={2}
+          duration={2}
           activeStrokeWidth={12}
           inActiveStrokeWidth={12}
-          activeStrokeColor="#6C5CE7"
+          activeStrokeColor="#f44949ff"
           inActiveStrokeColor="#E8EAF0"
           progressValueStyle={{ fontWeight: '600' }}
-          valueSuffix="%"
         />
         <Text style={styles.subtitle}>
-          Total Remaining: $
+          Total: {totalCFA}
         </Text>
         <Separator />
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -161,3 +156,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 });
+
+// Find the proper way to import transactions and calculate remaining.
